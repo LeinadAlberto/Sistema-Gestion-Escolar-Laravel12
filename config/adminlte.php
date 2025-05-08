@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'Sistema de Gestión Escolar',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -300,6 +300,12 @@ return [
 
     'menu' => [
         // Navbar items:
+        [
+            'text' => 'Configuración',
+            'url' => 'admin/configuracion',
+            'icon' => 'fas fa-fw fa-cog',
+            'classes' => 'bg-info text-white'
+        ],
         [
             'type' => 'navbar-search',
             'text' => 'search',
