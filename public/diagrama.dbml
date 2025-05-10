@@ -9,3 +9,8 @@ Table configuraciones {
     web varchar
     logo varchar
 }
+
+Table gestiones {
+    id int [pk, increment]
+    nombre varchar
+}
