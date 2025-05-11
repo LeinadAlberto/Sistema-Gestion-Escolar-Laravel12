@@ -312,6 +312,12 @@ return [
             'icon' => 'fas fa-fw fa-tasks',
             'classes' => 'bg-info text-white'
         ],
+        [
+            'text' => 'Niveles',
+            'url' => 'admin/niveles',
+            'icon' => 'fas fa-fw fa-layer-group',
+            'classes' => 'bg-info text-white'
+        ],
     ],
 
     /*
