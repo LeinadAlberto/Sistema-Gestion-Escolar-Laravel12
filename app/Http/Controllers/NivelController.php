@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Nivel;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 class NivelController extends Controller
@@ -50,9 +51,23 @@ class NivelController extends Controller
         
     }
 
-    public function update(Request $request, Nivel $nivel)
+    public function update(Request $request, $id)
     {
-        
+        $validate = 
+
+        $request->validate([
+            'nombre' => 'required|max:255|unique:nivels,nombre,' . $id
+        ]);
+
+        $nivel = Nivel::find($id);
+
+        $nivel->nombre = $request->nombre;
+
+        $nivel->save();
+
+        return redirect()->route('admin.nivel.index')
+                ->with('mensaje', 'El nivel se modifico correctamente')
+                ->with('icono', 'success');
     }
 
     public function destroy(Nivel $nivel)
