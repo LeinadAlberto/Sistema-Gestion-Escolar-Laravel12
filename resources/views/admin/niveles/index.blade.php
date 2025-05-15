@@ -47,9 +47,9 @@
                                                                     <i class="fas fa-layer-group"></i>
                                                                 </span>
                                                             </div>
-                                                            <input type="text" id="nombre" class="form-control" name="nombre" value="{{ old('nombre') }}" placeholder="Escriba aquí..." required>
+                                                            <input type="text" id="nombre" class="form-control" name="nombre_create" value="{{ old('nombre_create') }}" placeholder="Escriba aquí..." required>
                                                         </div><!-- /.input-group -->
-                                                        @error('nombre')
+                                                        @error('nombre_create')
                                                             <small class="text-danger">{{ $message }}</small>
                                                         @enderror
                                                     </div><!-- /.form-group -->
@@ -70,7 +70,7 @@
                 </div><!-- /.card-header -->
 
                 <div class="card-body">
-                    <table id="example" class="table table-bordered table-striped table-hover">
+                    <table id="example" class="table table-bordered table-striped table-hover collapsed dtr-inline">
                         <thead>
                             <tr class="text-center">
                                 <th>Nro</th>
@@ -82,12 +82,16 @@
                         <tbody>
                             @foreach ($niveles as $nivel)
                                 <tr>
-                                    <td class="text-center">{{ $nivel->id }}</td>
+                                    <td class="text-center">{{ $loop->iteration }}</td>
                                     <td class="text-center">{{ $nivel->nombre }}</td>
                                     
-                                    <!-- Boton del Modal para Editar Nivel -->
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modalUpdate{{ $nivel->id }}">
+                                    
+                                    <td class="text-center d-flex justify-content-center" 
+                                        style="padding-top: 11px; padding-bottom: 11px; border-top: 0px; border-bottom: 0px;">
+                                        <!-- Boton del Modal para Editar Nivel -->
+                                        <button type="button" class="btn btn-success btn-sm rounded-0 rounded-start border-end-0" 
+                                                title="Editar Nivel" data-toggle="modal" data-target="#modalUpdate{{ $nivel->id }}"
+                                                style="width: 100px; height: 31px; line-height: 1; padding: 0;">
                                             <i class="fas fa-pencil-alt"></i> Editar
                                         </button>
 
@@ -134,6 +138,41 @@
                                                 </div><!-- /.modal-content -->
                                             </div><!-- /.modal-dialog -->
                                         </div><!-- /.Modal para Editar Nivel -->
+                                    
+                                        <!-- Boton y formulario para Eliminar Nivel -->
+                                        <form action="{{ url('/admin/niveles/' . $nivel->id) }}" method="post" id="miFormulario{{ $nivel->id }}" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm rounded-0 rounded-end border-start-0" 
+                                                    title="Eliminar Nivel" 
+                                                    style="width: 100px; height: 31px; line-height: 1; padding: 0;" 
+                                                    onclick="preguntar{{ $nivel->id }}(event)">
+                                                <i class="fas fa-trash"></i> Eliminar
+                                            </button>
+                                        </form>
+
+                                        <script>
+                                            function preguntar{{ $nivel->id }}(event) {
+                                                event.preventDefault();
+
+                                                Swal.fire({
+                                                    title: '¿Desea eliminar este registro?',
+                                                    text: '',
+                                                    icon: 'question',
+                                                    showDenyButton: true,
+                                                    confirmButtonText: 'Eliminar',
+                                                    confirmButtonColor: '#a5161d',
+                                                    denyButtonColor: '#270a0a',
+                                                    denyButtonText: 'Cancelar',
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        // JavaScript puro para enviar el formulario
+                                                        document.getElementById('miFormulario{{ $nivel->id }}').submit();
+                                                    }
+                                                });
+                                            }
+                                        </script>
+
                                     </td>
                                 </tr>
                             @endforeach
@@ -157,8 +196,12 @@
     @if ($errors->any())
         <script>
             $(document).ready(function() {
-                $('#modalCreate').modal('show')
-            })
+                @if (session('modal_id')) 
+                    $('#modalUpdate{{ session('modal_id') }}').modal('show');
+                @else 
+                    $('#modalCreate').modal('show');
+                @endif
+            });
         </script>
     @endif
 @stop

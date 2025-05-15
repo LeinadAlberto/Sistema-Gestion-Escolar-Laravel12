@@ -15,11 +15,6 @@ class NivelController extends Controller
         return view('admin.niveles.index', compact('niveles'));
     }
 
-    public function create()
-    {
-        
-    }
-
     public function store(Request $request)
     {
         /* $datos = request()->all();
@@ -27,12 +22,12 @@ class NivelController extends Controller
         return response()->json($datos); */
 
         $request->validate([
-            'nombre' => 'required|max:100|unique:nivels'
+            'nombre_create' => 'required|max:100|unique:nivels,nombre'
         ]);
 
         $nivel = new Nivel();
 
-        $nivel->nombre = $request->nombre;
+        $nivel->nombre = $request->nombre_create;
 
         $nivel->save();
 
@@ -41,23 +36,19 @@ class NivelController extends Controller
                 ->with('icono', 'success');
     }
 
-    public function show(Nivel $nivel)
-    {
-        
-    }
-
-    public function edit(Nivel $nivel)
-    {
-        
-    }
-
     public function update(Request $request, $id)
     {
-        $validate = 
-
-        $request->validate([
+        $validate = Validator::make($request->all(), [
             'nombre' => 'required|max:255|unique:nivels,nombre,' . $id
         ]);
+
+        if ($validate->fails()) {
+            return redirect()
+                ->back()
+                ->withErrors($validate)
+                ->withInput()
+                ->with('modal_id',$id);
+        }
 
         $nivel = Nivel::find($id);
 
@@ -70,8 +61,14 @@ class NivelController extends Controller
                 ->with('icono', 'success');
     }
 
-    public function destroy(Nivel $nivel)
+    public function destroy($id)
     {
-        //
+        $nivel = Nivel::find($id);
+
+        $nivel->delete();
+
+        return redirect()->route('admin.nivel.index')
+                ->with('mensaje', 'El nivel se elimino correctamente')
+                ->with('icono', 'success');
     }
 }
